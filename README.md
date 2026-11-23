@@ -39,40 +39,24 @@
 ```
 Any Cloud/
 ├── package.json               # Frontend dependencies & Tauri scripts
+├── package-lock.json          # Locked frontend dependencies
 ├── Cargo.toml                 # Root cargo workspace
 ├── vite.config.ts             # Vite bundler configuration
 ├── tailwind.config.js         # Fluent Design color tokens & radius
+├── src-tauri/                 # Rust desktop backend and Tauri configuration
+│   ├── Cargo.toml             # Backend dependencies
+│   ├── tauri.conf.json         # Tauri 2 app & window configuration
+│   ├── capabilities/          # Tauri 2 capability & permission declarations
+│   └── src/                   # Commands, database, OAuth, and Rclone modules
 ├── src/
-│   ├── frontend/              # Modern React + TypeScript interface
-│   │   ├── components/        # Reusable UI, layout, explorer & dashboard
-│   │   │   ├── layout/        # AppShell, Sidebar, Header, StatusBar
-│   │   │   ├── dashboard/     # Multi-cloud storage breakdown, health cards
-│   │   │   ├── explorer/      # FileGrid, FileList, Breadcrumbs, ContextMenu
-│   │   │   ├── clouds/        # AddCloudWizard, CloudAccountsPage
-│   │   │   ├── transfers/     # TransfersPage, CrossCloudTransferModal
-│   │   │   └── ui/            # Icons, Modal, Toast notifications
-│   │   ├── stores/            # Zustand reactive state stores
-│   │   ├── services/          # Tauri IPC client & event subscriptions
-│   │   ├── types/             # TypeScript interfaces (Cloud, File, Transfer)
-│   │   ├── lib/               # Utility functions (formatting, icons, categories)
-│   │   └── styles/            # Tailwind CSS and theme definitions
-│   │
-│   └── src-tauri/             # Rust desktop backend
-│       ├── Cargo.toml         # Backend dependencies
-│       ├── tauri.conf.json    # Tauri 2 app & window configuration
-│       ├── capabilities/      # Tauri 2 capability & permission declarations
-│       └── src/
-│           ├── lib.rs         # Application setup & command registration
-│           ├── main.rs        # Native desktop entry point
-│           ├── rclone/        # Rclone engine (ProcessManager, OutputParser, ...)
-│           ├── database/      # SQLite cache, FTS5 schema & repositories
-│           ├── transfers/     # Transfer tasks, states & conflict strategies
-│           ├── providers/     # Cloud provider capability abstraction
-│           ├── security/      # Token sanitization & credential protection
-│           ├── oauth/         # Loopback OAuth receiver with PKCE
-│           ├── events/        # Typed event definitions emitted to frontend
-│           ├── platform/      # Windows CREATE_NO_WINDOW & OS directories
-│           └── commands/      # Tauri IPC command handlers
+│   └── frontend/              # Modern React + TypeScript interface
+│       ├── components/        # Reusable UI, layout, explorer & dashboard
+│       ├── stores/            # Zustand reactive state stores
+│       ├── services/          # Tauri IPC client & event subscriptions
+│       ├── types/             # TypeScript interfaces (Cloud, File, Transfer)
+│       ├── lib/               # Utility functions
+│       └── styles/            # Tailwind CSS and theme definitions
+├── scripts/                   # Windows packaging and version scripts
 └── docs/                      # Architectural specifications & guides
 ```
 
@@ -114,4 +98,4 @@ Any Cloud is built with a strict **local-first, zero-relay architecture**:
 - **No Intermediary Servers:** Files and authentication tokens stream directly between your personal device and your cloud providers.
 - **Local Credential Storage:** Cloud API tokens, passwords, and S3 keys are stored locally on your device in your local SQLite database and Rclone config.
 - **Zero Data Mining:** We do not track, collect, monetize, or inspect your file contents or directory structures.
-- **Full Privacy Policy:** Read our complete [Privacy Policy](file:///c:/Users/sayan/Documents/GitHub/Any%20Cloud/PRIVACY.md).
+- **Full Privacy Policy:** Read our complete [Privacy Policy](PRIVACY.md).

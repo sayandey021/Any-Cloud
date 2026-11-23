@@ -1,7 +1,6 @@
 # Rust build artifacts
 /target/
 **/*.rs.bk
-Cargo.lock
 
 # Node.js dependencies & build output
 /node_modules/
@@ -11,9 +10,16 @@ Cargo.lock
 # Tauri build artifacts
 src-tauri/target/
 
+# Local application data and optional downloaded tools
+/anycloud_data/
+/bin/rclone.exe
+/pwsh.exe
+/extracted_exe_icon.png
+
 # Operating system metadata
 Thumbs.db
 Desktop.ini
+desktop.ini
 .DS_Store
 
 # Log files
