@@ -1,101 +1,73 @@
-# Any Cloud — Modern Multi-Cloud Storage Manager
+# Any Cloud
 
-<p align="center">
-  <b>A unified, lightweight, cross-platform multi-cloud desktop file manager built with Tauri 2, Rust, React, and Rclone.</b>
-</p>
+Any Cloud is a desktop application for browsing local and cloud storage and transferring files between connected accounts. It uses React and TypeScript for the interface, Tauri 2 and Rust for the desktop application, and [Rclone](https://rclone.org/) for cloud operations.
 
----
+## Features
 
-## 🌟 Overview
+- Connect local folders and cloud remotes supported by the app.
+- Browse files and folders from connected accounts.
+- Copy or move files between accounts, with transfer progress and conflict options.
+- Keep file metadata in a local cache for browsing.
+- Configure the app's appearance and transfer preferences.
 
-**Any Cloud** eliminates the friction and cognitive overhead of juggling multiple cloud storage applications (Google Drive, Microsoft OneDrive, Amazon S3, Dropbox, Box, WebDAV). It connects all cloud storage accounts into one unified, blazing-fast desktop file manager with native performance and Windows 11 Fluent Design aesthetics.
+Available providers and operations depend on the provider and its Rclone support.
 
-### Key Architectural Highlights
+## Requirements
 
-- **Desktop-First Native Architecture:** Built with Tauri 2 and Rust for minimal memory footprint (< 40MB idle) and rapid startup.
-- **Rclone Integration Service:** Robust asynchronous process manager executing Rclone with safe argument vector arrays, hidden console windows (`CREATE_NO_WINDOW`), stdout/stderr streaming, JSON output parsing, and zombie-prevention (`kill_on_drop`).
-- **Local SQLite Metadata Cache:** Fast background synchronization and instant full-text searching (FTS5) across all connected clouds even when disconnected.
-- **Cross-Cloud Transfer Engine:** Native multi-threaded file copying and moving between different cloud providers with live progress, speed calculation, ETA, and duplicate conflict resolution (Replace, Skip, Keep Both).
-- **Security-First Credential Isolation:** Never exposes cloud credentials or access tokens to the frontend; uses local loopback OAuth callback with PKCE and state validation.
+- Node.js 18 or later and npm
+- Rust stable toolchain and Cargo
+- The platform prerequisites for [Tauri 2](https://v2.tauri.app/start/prerequisites/)
+- Rclone for cloud operations (optional when working with local storage only)
 
----
+The app looks for Rclone alongside the application, in a nearby `bin` directory, in the app data directory, or on `PATH`. On Windows, the app data binary directory is `%APPDATA%\AnyCloud\bin`. See [Rclone's download page](https://rclone.org/downloads/) for installation instructions.
 
-## 🏗️ Technology Stack
+## Get started
 
-| Layer | Technologies |
-|---|---|
-| **Frontend Shell** | Tauri 2 Desktop Runtime, Webview2 |
-| **Frontend UI** | React 18, TypeScript, Tailwind CSS, Lucide Icons |
-| **State Management** | Zustand stores (Accounts, Files, Transfers, Themes, UI) |
-| **Backend Core** | Rust 1.80+, Tokio asynchronous runtime |
-| **Storage Engine** | Rclone CLI process orchestrator |
-| **Local Database** | SQLite with WAL mode, FTS5 full-text search |
-| **Build & Tooling** | Vite, Cargo |
+From the repository root:
 
----
-
-## 📁 Project Structure
-
+```sh
+npm ci
+npm run start
 ```
-Any Cloud/
-├── package.json               # Frontend dependencies & Tauri scripts
-├── package-lock.json          # Locked frontend dependencies
-├── Cargo.toml                 # Root cargo workspace
-├── vite.config.ts             # Vite bundler configuration
-├── tailwind.config.js         # Fluent Design color tokens & radius
-├── src-tauri/                 # Rust desktop backend and Tauri configuration
-│   ├── Cargo.toml             # Backend dependencies
-│   ├── tauri.conf.json         # Tauri 2 app & window configuration
-│   ├── capabilities/          # Tauri 2 capability & permission declarations
-│   └── src/                   # Commands, database, OAuth, and Rclone modules
+
+`npm run start` launches the Tauri desktop app. To run only the Vite frontend server, use `npm run dev`; native desktop features require the Tauri runtime.
+
+## Build and test
+
+```sh
+# Type-check and build the frontend
+npm run build
+
+# Build the desktop application
+npm run desktop:build
+
+# Run Rust tests
+cargo test --workspace
+```
+
+To check your local Tauri development setup:
+
+```sh
+npm run tauri -- info
+```
+
+## Project layout
+
+```text
+.
 ├── src/
-│   └── frontend/              # Modern React + TypeScript interface
-│       ├── components/        # Reusable UI, layout, explorer & dashboard
-│       ├── stores/            # Zustand reactive state stores
-│       ├── services/          # Tauri IPC client & event subscriptions
-│       ├── types/             # TypeScript interfaces (Cloud, File, Transfer)
-│       ├── lib/               # Utility functions
-│       └── styles/            # Tailwind CSS and theme definitions
-├── scripts/                   # Windows packaging and version scripts
-└── docs/                      # Architectural specifications & guides
+│   └── frontend/       # React interface, state, and Tauri client
+├── src-tauri/
+│   ├── src/            # Rust commands and application services
+│   └── tauri.conf.json # Desktop application configuration
+├── scripts/            # Windows packaging and version scripts
+├── docs/               # Architecture notes
+├── package.json        # Frontend and Tauri commands
+└── Cargo.toml          # Rust workspace
 ```
 
----
+## Local data and privacy
 
-## 🚀 Getting Started
+The app stores account configuration and cached file metadata locally. On Windows, the default app data directory is `%APPDATA%\AnyCloud`; on other systems, see the platform data-directory handling in [`src-tauri/src/platform/mod.rs`](src-tauri/src/platform/mod.rs). If the platform data directory is unavailable, the app can fall back to `./anycloud_data`.
 
-### Prerequisites
-
-1. **Node.js**: v18 or later
-2. **Rust & Cargo**: v1.75 or later
-3. **Rclone** (optional for mock preview, recommended for live cloud sync): Available in PATH or `%APPDATA%\AnyCloud\bin\rclone.exe`.
-
-### Development
-
-```bash
-# 1. Install frontend dependencies
-npm install
-
-# 2. Run in development mode (browser preview)
-npm run dev
-
-# 3. Run desktop Tauri application
-npm run tauri dev
-```
-
-### Running Backend Tests
-
-```bash
-# Run Rust unit and integration test suite
-cargo test
-```
-
----
-
-## 🔒 Privacy & Security
-
-Any Cloud is built with a strict **local-first, zero-relay architecture**:
-- **No Intermediary Servers:** Files and authentication tokens stream directly between your personal device and your cloud providers.
-- **Local Credential Storage:** Cloud API tokens, passwords, and S3 keys are stored locally on your device in your local SQLite database and Rclone config.
-- **Zero Data Mining:** We do not track, collect, monetize, or inspect your file contents or directory structures.
-- **Full Privacy Policy:** Read our complete [Privacy Policy](PRIVACY.md).
+Do not commit local app data, browser profiles, credentials, or downloaded binaries. These are excluded by [`.gitignore`](.gitignore). For more information about data handling, see the [Privacy Policy](PRIVACY.md).
